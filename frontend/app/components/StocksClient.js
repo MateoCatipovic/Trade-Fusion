@@ -1,7 +1,9 @@
 import React from "react";
-import { useEffect } from "react";
 import useWebSocket from "../../utils/useWebSocket";
-import ChartComponent from "../components/ChartComponent";
+import dynamic from "next/dynamic";
+const ChartComponent = dynamic(() => import("../components/ChartComponent"), {
+  ssr: false, // Disable server-side rendering
+});
 
 const StocksClient = () => {
   // const [googleData, setGoogleData] = useState([]);
@@ -137,7 +139,7 @@ const StocksClient = () => {
   //     },
   //   },
   // };
-  const { googleData, btcUsdData, avaxUsdData } = useWebSocket(
+  const { googleData, btcUsdData, avaxUsdData, appleData } = useWebSocket(
     "ws://localhost:5000"
   );
 
@@ -148,6 +150,7 @@ const StocksClient = () => {
         <ChartComponent data={googleData} title="GOOGL Price" />
         <ChartComponent data={btcUsdData} title="BTC/USD Price" />
         <ChartComponent data={avaxUsdData} title="AVAX/USD Price" />
+        <ChartComponent data={appleData} title="AAPL Price" />
       </div>
     </div>
   );

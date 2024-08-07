@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -32,7 +33,7 @@ const ChartComponent = ({ data, title }) => {
       x: {
         type: "time",
         time: {
-          unit: "minute",
+          unit: "day",
         },
         adapters: {
           date: "date-fns",
@@ -65,6 +66,7 @@ const ChartComponent = ({ data, title }) => {
       },
     },
   };
+    
 
   return <Line data={chartData} options={options} plugins={[zoomPlugin]}/>;
 };

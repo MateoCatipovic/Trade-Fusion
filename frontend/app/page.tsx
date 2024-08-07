@@ -1,36 +1,36 @@
 "use client";
-import Image from "next/image";
+// import Image from "next/image";
 import { useState, useEffect } from "react";
-import { Line } from "react-chartjs-2";
+// import { Line } from "react-chartjs-2";
 // import { fetchStocks } from "../lib/api";
-import AlpacaWebSocketCrypto from "./components/AlpacaWebSocketCrypto";
+// import AlpacaWebSocketCrypto from "./components/AlpacaWebSocketCrypto";
 import StocksClient from "./components/StocksClient";
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  Title,
-  CategoryScale,
-  Legend,
-  ChartOptions,
-} from "chart.js";
-import AlpacaWebSocket from "./components/AlpacaWebSocketCrypto";
+// import {
+//   Chart as ChartJS,
+//   LineElement,
+//   PointElement,
+//   LinearScale,
+//   Title,
+//   CategoryScale,
+//   Legend,
+//   ChartOptions,
+// } from "chart.js";
+// import AlpacaWebSocket from "./components/AlpacaWebSocketCrypto";
 
-ChartJS.register(
-  LineElement,
-  PointElement,
-  LinearScale,
-  Title,
-  CategoryScale,
-  Legend
-);
+// ChartJS.register(
+//   LineElement,
+//   PointElement,
+//   LinearScale,
+//   Title,
+//   CategoryScale,
+//   Legend
+// );
 
 export default function Home() {
   const [stocks, setStocks] = useState<any | null>(null);
   const [crypto, setCrypto] = useState([]);
   const [forex, setForex] = useState([]);
-  
+
   // useEffect(() => {
   //   const getData = async () => {
   //     // const stocksData = await fetchStocks();

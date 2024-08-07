@@ -29,8 +29,11 @@ app.use(cors());
 
 app.get("/api/historical/:type/:symbol", async (req, res) => {
   const { type, symbol } = req.params;
+  console.log("Requested type:", type);
+  console.log("Requested symbol:", symbol);
   try {
     const data = await fetchHistoricalData(type, symbol);
+    console.log("podaci: ", data);
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Error fetching data" });
@@ -132,8 +135,8 @@ function connectToExternalCryptoWs() {
       externalCryptoWs.send(
         JSON.stringify({
           action: "subscribe",
-          //trades: ["AVAX/USD"], // Subscribe to test symbol
           trades: ["AVAX/USD", "BTC/USD"],
+          //quotes: ["AVAX/USD", "BTC/USD"]
         })
       );
     }
@@ -202,8 +205,7 @@ async function fetchHistoricalData(type, symbol) {
     let bars;
     if (type === "crypto") {
       bars = await alpaca.getCryptoBars([symbol], optionsCrypto);
-      console.log(bars)
-      return bars[symbol];
+      return bars.get(symbol);
     } else if (type === "stock") {
       bars = await alpaca.getBarsV2([symbol], optionsStocks);
       const barsArray = [];
@@ -213,7 +215,6 @@ async function fetchHistoricalData(type, symbol) {
         barsArray.push(bar);
       }
 
-      console.log("Historical data:", barsArray);
       return barsArray;
     }
   } catch (error) {
@@ -223,9 +224,9 @@ async function fetchHistoricalData(type, symbol) {
 }
 
 // Call the function with the desired stock symbol
-//fetchHistoricalData("stock", "AAPL");
-//connectToExternalCryptoWs();
-//connectToExternalStocksWs();
+//fetchHistoricalData("crypto", "BTC/USD");
+connectToExternalCryptoWs();
+connectToExternalStocksWs();
 
 // Start the Express server
 const PORT = 5000;
