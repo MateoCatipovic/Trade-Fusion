@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { Line } from "react-chartjs-2";
 import "chart.js/auto";
@@ -66,9 +66,21 @@ const ChartComponent = ({ data, title }) => {
       },
     },
   };
-    
 
-  return <Line data={chartData} options={options} plugins={[zoomPlugin]}/>;
+  // Add a plugin to set the background color
+  const backgroundPlugin = {
+    id: "custom_canvas_background_color",
+    beforeDraw: (chart) => {
+      const ctx = chart.canvas.getContext("2d");
+      ctx.save();
+      ctx.globalCompositeOperation = "destination-over";
+      ctx.fillStyle = "white"; // Set your desired background color
+      ctx.fillRect(0, 0, chart.width, chart.height);
+      ctx.restore();
+    },
+  };
+
+  return <Line data={chartData} options={options} plugins={[zoomPlugin, backgroundPlugin]} />;
 };
 
 export default ChartComponent;

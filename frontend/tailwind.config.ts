@@ -12,9 +12,16 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "sign-in": "url('/bull_loginHD.png')",
+        "sign-up": "url('/bear_registerHD.png')",
+        "four-sided-gradient":
+          "linear-gradient(to top, transparent,  rgba(0, 0, 0, 0.5)), " +
+          "linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent), " +
+          "linear-gradient(to left, rgba(0, 0, 0, 0.7), transparent), " +
+          "linear-gradient(to right, rgba(0, 0, 0, 0.7), transparent)",
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 };
 export default config;

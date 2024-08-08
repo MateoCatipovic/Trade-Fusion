@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 // import { fetchStocks } from "../lib/api";
 // import AlpacaWebSocketCrypto from "./components/AlpacaWebSocketCrypto";
 import StocksClient from "./components/StocksClient";
+import Navbar from "./components/Navbar";
 // import {
 //   Chart as ChartJS,
 //   LineElement,
@@ -97,20 +98,16 @@ export default function Home() {
   // };
 
   return (
-    <main className="flex flex-col items-center justify-between p-24">
+    <main className="flex flex-col items-center justify-between  ">
       {" "}
-      <div>
+      <Navbar />
+      <div className="">
         <h1>Trading App</h1>
         {/* <AlpacaWebSocket />
         <AlpacaWebSocketCrypto/> */}
-        <div>
+        <div className="">
           <h2>Stocks</h2>
-
           <StocksClient />
-
-          {/* <div className="relative w-[800px] h-[500px]">
-            <Line data={createChartData(stocks)} options={chartOptions} />
-          </div> */}
         </div>
       </div>
     </main>
