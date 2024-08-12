@@ -1,11 +1,13 @@
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-const Navbar = () => {
+
+const Navbar = ({isHomePage}) => {
   return (
     <>
-      <div className="flex items-center justify-between w-full mb-12">
+      <div className={`flex items-center justify-between w-full  ${isHomePage ? "" : "mb-12"}`}>
         <Link href="/">
           <Image
             src="/logo.png"
@@ -24,10 +26,10 @@ const Navbar = () => {
         </div>
         <div>
           <Link href="/SignIn">
-            <button className="text-green-400 pr-4">Sign in</button>
+            <button className="text-green-400 font-bold pr-4">Sign in</button>
           </Link>
           <Link href="/SignUp">
-            <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+            <button className="bg-[#1eb969] hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
               Sign up
             </button>
           </Link>

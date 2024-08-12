@@ -8,12 +8,16 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundPosition: {
+        'top-neg-50px': 'center top -120px',
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         "sign-in": "url('/bull_loginHD.png')",
         "sign-up": "url('/bear_registerHD.png')",
+        "home": "url('/bg-landing.png')",
         "four-sided-gradient":
           "linear-gradient(to top, transparent,  rgba(0, 0, 0, 0.5)), " +
           "linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent), " +

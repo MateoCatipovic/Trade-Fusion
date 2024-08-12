@@ -98,18 +98,25 @@ export default function Home() {
   // };
 
   return (
-    <main className="flex flex-col items-center justify-between  ">
+    <main className="flex flex-col   ">
       {" "}
-      <Navbar />
-      <div className="">
-        <h1>Trading App</h1>
+      <Navbar isHomePage={true} />
+      <div className="bg-home h-screen bg-top-neg-50px">
+        <p className="w-[550px] text-2xl mt-12">
+          <b className="text-3xl">Connect with Like-Minded Traders:</b>
+          <br />
+          <br /> Share your thoughts, ideas, and success stories with a
+          community that understands your passion for trading. Network,
+          collaborate, and grow together as you strive for financial freedom.
+        </p>
+
         {/* <AlpacaWebSocket />
         <AlpacaWebSocketCrypto/> */}
-        <div className="">
-          <h2>Stocks</h2>
-          <StocksClient />
+        <div className="mt-12">
+          <button className="button-86">Start now</button>
         </div>
       </div>
+      <StocksClient />
     </main>
   );
 }

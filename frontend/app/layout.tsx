@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-
+import Contacts from "./components/Contacts";
 import "./globals.css";
-
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css' // Import the CSS
+config.autoAddCss = false; // Prevents Font Awesome from adding its own CSS
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="scrollbar scrollbar-thumb-gray-500 scrollbar-track-black-900 overflow-y-scroll" >{children}</body>
+      <body className="scrollbar scrollbar-thumb-gray-500 scrollbar-track-black-900 overflow-y-scroll">
+        {children}
+        <footer className="p-0">
+          <Contacts />
+        </footer>
+      </body>
     </html>
   );
 }
