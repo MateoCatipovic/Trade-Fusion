@@ -144,10 +144,11 @@ const StocksClient = () => {
   );
 
   return (
-    <div>
+    <div className="w-[800px] h-[700px]">
       <h1>Real-Time Stock Prices</h1>
-      <div style={{ width: "800px", height: "400px" }}>
+      <div className="flex " >
         <ChartComponent data={googleData} title="GOOGL Price" />
+
         <ChartComponent data={btcUsdData} title="BTC/USD Price" />
         <ChartComponent data={avaxUsdData} title="AVAX/USD Price" />
         <ChartComponent data={appleData} title="AAPL Price" />

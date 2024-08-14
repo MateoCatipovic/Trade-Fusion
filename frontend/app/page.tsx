@@ -1,11 +1,12 @@
 "use client";
 // import Image from "next/image";
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 // import { Line } from "react-chartjs-2";
 // import { fetchStocks } from "../lib/api";
 // import AlpacaWebSocketCrypto from "./components/AlpacaWebSocketCrypto";
 import StocksClient from "./components/StocksClient";
 import Navbar from "./components/Navbar";
+import Link from "next/link";
 // import {
 //   Chart as ChartJS,
 //   LineElement,
@@ -28,9 +29,9 @@ import Navbar from "./components/Navbar";
 // );
 
 export default function Home() {
-  const [stocks, setStocks] = useState<any | null>(null);
-  const [crypto, setCrypto] = useState([]);
-  const [forex, setForex] = useState([]);
+  // const [stocks, setStocks] = useState<any | null>(null);
+  // const [crypto, setCrypto] = useState([]);
+  // const [forex, setForex] = useState([]);
 
   // useEffect(() => {
   //   const getData = async () => {
@@ -98,7 +99,7 @@ export default function Home() {
   // };
 
   return (
-    <main className="flex flex-col   ">
+    <main className="flex flex-col">
       {" "}
       <Navbar isHomePage={true} />
       <div className="bg-home h-screen bg-top-neg-50px">
@@ -113,10 +114,14 @@ export default function Home() {
         {/* <AlpacaWebSocket />
         <AlpacaWebSocketCrypto/> */}
         <div className="mt-12">
-          <button className="button-86">Start now</button>
+          <Link href="/SignUp" scroll={false}>
+            <button className="button-86">Start now</button>
+          </Link>
         </div>
       </div>
-      <StocksClient />
+      <div>
+        <StocksClient />
+      </div>
     </main>
   );
 }

@@ -7,11 +7,13 @@ const http = require("http");
 const WebSocket = require("ws");
 const axios = require("axios");
 const cors = require("cors");
+const cheerio = require("cheerio");
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
 const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
+
 
 // External WebSocket connection (e.g., to Alpaca API or another market data provider)
 const externalStocksWsUrl = "wss://stream.data.alpaca.markets/v2/iex";
@@ -34,6 +36,26 @@ app.get("/api/historical/:type/:symbol", async (req, res) => {
   try {
     const data = await fetchHistoricalData(type, symbol);
     console.log("podaci: ", data);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching data" });
+  }
+});
+
+app.get("/api/news/:category", async (req, res) => {
+  const { category } = req.params;
+  console.log("Category", category);
+  try {
+    const data = await fetchNews(category);
+    // Display the articles
+    data.articles.forEach((article, index) => {
+      console.log(`Article ${index + 1}:`);
+      console.log(`Title: ${article.title}`);
+      console.log(`URL: ${article.url}`);
+      console.log(`Date: ${article.seendate}`);
+      console.log(`Image URL: ${article.socialimage}`);
+      console.log("--------------------------------");
+    });
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "Error fetching data" });
@@ -159,6 +181,105 @@ function connectToExternalCryptoWs() {
   });
 }
 
+// Function to fetch Forex-related news from GDELT API
+async function fetchNews(category) {
+  const query = category; // Query for Forex-related news
+  const maxRecords = 30; // Number of records to return
+  const outputFormat = "json"; // Output format
+
+  // Construct the API URL
+  const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(
+    query + " sourcelang:english"
+  )}&mode=artlist&maxrecords=${maxRecords}&format=${outputFormat}`;
+
+  try {
+    // Make the API request
+    const response = await fetch(url);
+
+    // Check if the request was successful
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Parse the JSON response
+    const data = await response.json();
+    // console.log("kateg", category);
+    // if (category === "Forex") {
+    //   return processArticles(data, forexImg);
+    // } else {
+    //   return data;
+    // }
+
+    //  // Display the articles
+    // data.articles.forEach((article, index) => {
+    //   console.log(`Article ${index + 1}:`);
+    //   console.log(`Title: ${article.title}`);
+    //   console.log(`URL: ${article.url}`);
+    //   console.log(`Date: ${article.seendate}`);
+    //   console.log("--------------------------------");
+    // });
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch Forex news:", error);
+  }
+}
+
+// Main function to process articles
+async function processArticles(data, imageUrl) {
+  try {
+    console.log("News: ", data.articles);
+
+    // Create a new array to hold the articles with image URLs
+    const articlesWithImages = await Promise.all(
+      data.articles.map(async (article, index) => {
+        // Fetch the image URL for each article
+        // const imageUrl = await getImageUrl(article.url);
+
+        // Add the image URL to the article object
+        return {
+          ...article,
+          imageUrl: imageUrl,
+        };
+      })
+    );
+
+    // // Display the articles with image URLs
+    // articlesWithImages.forEach((article, index) => {
+    //   console.log(`Article ${index + 1}:`);
+    //   console.log(`Title: ${article.title}`);
+    //   console.log(`URL: ${article.url}`);
+    //   console.log(`Date: ${article.seendate}`);
+    //   console.log(`Image URL: ${article.imageUrl}`);
+    //   console.log("--------------------------------");
+    // });
+
+    return articlesWithImages;
+  } catch (error) {
+    console.error("Failed to fetch news:", error);
+  }
+}
+
+async function getImageUrl(articleUrl) {
+  try {
+    const { data } = await axios.get(articleUrl, {
+      headers: {
+        "User-Agent": " Chrome/91.0.4472.124 ",
+      },
+    });
+
+    const $ = cheerio.load(data);
+    const imageUrl = $("img").first().attr("src"); // Adjust selector as needed
+
+    return imageUrl;
+  } catch (error) {
+    console.error("Error fetching the article:", error);
+    return null;
+  }
+}
+
+// Call the function to fetch Forex news
+//fetchNews();
+
 // // Function to fetch historical data
 // async function fetchHistoricalData(symbol) {
 //   try {
@@ -225,8 +346,8 @@ async function fetchHistoricalData(type, symbol) {
 
 // Call the function with the desired stock symbol
 //fetchHistoricalData("crypto", "BTC/USD");
-connectToExternalCryptoWs();
-connectToExternalStocksWs();
+//connectToExternalCryptoWs();
+//connectToExternalStocksWs();
 
 // Start the Express server
 const PORT = 5000;

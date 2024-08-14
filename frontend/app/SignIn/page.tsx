@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import Navbar from "../components/Navbar";
+ import Navbar from "../components/Navbar";
 
 const SignIn = () => {
   useEffect(() => {
@@ -16,11 +16,14 @@ const SignIn = () => {
     <div className="">
       <Navbar isHomePage={false} />
       <div className="relative bg-sign-in h-[700px] w-full bg-cover bg-center ">
+        {/* Gradients */}
         <div
           id="email-div"
           className="absolute inset-0 h-[250px]  w-full bg-gradient-to-t  to-black from-transparent"
         ></div>
         <div className="absolute bottom-0 h-[250px]  w-full  bg-gradient-to-b  to-black from-transparent"></div>
+
+        {/* Frosted Glass Effect */}
         <div className="backdrop-blur-[4px] h-[700px] w-full pt-[200px]">
           <div className="flex flex-col  items-center justify-between h-[250px]">
             <p className="text-[40px]  font-semibold ">Log in</p>
