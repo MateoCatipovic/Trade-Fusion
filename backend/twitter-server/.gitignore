@@ -1,0 +1,148 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDEs and text editors
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Sphinx documentation
+docs/_build/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Pyre type checker
+.pyre/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyright
+.pyright/
+
+# pyenv
+.python-version
+
+# VS Code
+.vscode/
+
+# dotenv
+.env
+
+# Database
+*.sqlite3
+*.db
+*.sqlite
+
+# Static files
+staticfiles/
+static/
+media/
+
+# Flask secret keys
+*.key
+
+# Celery task queue files
+celerybeat-schedule
+
+# Flask cache files
+flask_cache/
+
+# Local development logs
+*.log
+
+# MacOS specific files
+.DS_Store
+
+# SSH files
+*.pem
+
+# GitHub Actions
+# (ignore the workflow files if they aren't needed)
+.github/
+
+# Secrets files
+secret.json
+
+# Application-specific
+config.yaml
+config.yml
+
+# Node modules (if you use Node.js in your project)
+node_modules/
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Coverage reports
+coverage/
+
+# Python-specific server logs
+*.log
+gunicorn.log
+uwsgi.log
+
+cookies.json
