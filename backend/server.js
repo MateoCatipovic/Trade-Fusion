@@ -11,9 +11,17 @@ const cheerio = require("cheerio");
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+const { createClient } = require("@supabase/supabase-js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
 const apiKey = process.env.NEXT_PUBLIC_ALPACA_API_KEY;
 const secretKey = process.env.NEXT_PUBLIC_ALPACA_SECRET_KEY;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
+const JWT_SECRET = process.env.JWT_SECRET;  // Make sure to set this in your .env file
+const JWT_EXPIRES_IN = '1h';  // Adjust expiration as needed
 
 // External WebSocket connection (e.g., to Alpaca API or another market data provider)
 const externalStocksWsUrl = "wss://stream.data.alpaca.markets/v2/iex";
@@ -21,13 +29,111 @@ const externalCryptoWsUrl =
   "wss://stream.data.alpaca.markets/v1beta3/crypto/us";
 let externalStockWs;
 let externalCryptoWs;
+
+// Creating Supabase Client
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+// Creating Alpaca Client
 const alpaca = new Alpaca({
   keyId: apiKey,
   secretKey: secretKey,
   feed: "iex", // Use IEX feed
 });
 
+const router = express.Router();
 app.use(cors());
+app.use(express.json()); // Add this middleware to parse JSON bodies
+
+router.post("/api/login", async (req, res) => {
+  const { emailOrUsername, password } = req.body;
+
+  try {
+      // Check if user exists by email or username
+      const { data: user, error } = await supabase
+          .from("users")
+          .select("*")
+          .or(`email.eq.${emailOrUsername},userName.eq.${emailOrUsername}`)
+          .single();
+
+      if (error || !user) {
+          return res.status(400).json({ error: "Invalid credentials" });
+      }
+
+      // Check password
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+          return res.status(400).json({ error: "Invalid credentials" });
+      }
+
+      // Generate JWT
+      const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+      // Generate anti-CSRF token
+      const csrfToken = require('crypto').randomBytes(48).toString('hex');
+
+      // Send JWT in a HttpOnly cookie and CSRF token in header
+      res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+      res.set('X-CSRF-Token', csrfToken);
+
+      return res.status(200).json({ message: "Login successful" });
+
+  } catch (error) {
+      console.error("Login error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+app.post("/api/register", async (req, res) => {
+  const { email, userName, password } = req.body;
+
+  try {
+    // Check if email already exists
+    const { data: existingUserByEmail, error: emailCheckError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (existingUserByEmail) {
+      return res.status(400).json({ error: "Email is already in use" });
+    }
+
+    // Check if username already exists
+    const { data: existingUserByUsername, error: usernameCheckError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("username", userName)
+      .single();
+
+    if (existingUserByUsername) {
+      return res.status(400).json({ error: "Username is already taken" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Insert new user into the database
+    const { data, error } = await supabase.from("users").insert([
+      {
+        email: email,
+        username: userName,
+        password: hashedPassword,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error inserting user:", error);
+      return res.status(500).json({ error: "Error creating user" });
+    }
+
+    res.status(201).json({ message: "User created successfully" });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 app.get("/api/historical/:type/:symbol", async (req, res) => {
   const { type, symbol } = req.params;
@@ -346,8 +452,8 @@ async function fetchHistoricalData(type, symbol) {
 
 // Call the function with the desired stock symbol
 //fetchHistoricalData("crypto", "BTC/USD");
-//connectToExternalCryptoWs();
-//connectToExternalStocksWs();
+connectToExternalCryptoWs();
+connectToExternalStocksWs();
 
 // Start the Express server
 const PORT = 5000;

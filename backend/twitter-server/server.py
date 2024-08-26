@@ -1,12 +1,67 @@
+import os
+from dotenv import load_dotenv
+from pathlib import Path
 from quart import Quart, jsonify, request
 from quart_cors import cors
 from twikit import Client
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+#import asyncpraw
+import praw
+from datetime import datetime, timezone
+
+# Specify the path to the .env file
+env_path = Path('../.env')
+
+# Load environment variables from the .env file
+load_dotenv(dotenv_path=env_path)
+
+reddit = praw.Reddit(
+    client_id=os.getenv('REDDIT_CLIENT_ID'),
+    client_secret=os.getenv('REDDIT_CLIENT_SECRET'),
+    user_agent=os.getenv('REDDIT_APP_NAME')
+)
 
 app = Quart(__name__)
-app = cors(app, allow_origin="http://localhost:3000")  # Allow requests from your frontend's origin
+app = cors(app, allow_origin=["http://localhost:3000","http://localhost:5000" ])  # Allow requests from your frontend's origin
+
 
 # Initialize client
 client = Client('en-US')
+
+# Function to fetch Reddit posts (Synchronous)
+def fetch_reddit_posts_sync(subreddit_name):
+    return list(reddit.subreddit(subreddit_name).top(time_filter='week',limit=20))
+
+# Async function to run the synchronous function in a separate thread
+async def fetch_reddit_posts(subreddit_name):
+    loop = asyncio.get_event_loop()
+    with ThreadPoolExecutor() as pool:
+        posts = await loop.run_in_executor(pool, fetch_reddit_posts_sync, subreddit_name)
+    return posts
+
+
+@app.route('/fetch-reddit-posts', methods=['GET'])
+async def fetch_reddit_posts_route():
+    subreddit_name = 'python'  # Can be dynamically set via request args
+    try:
+        posts = await fetch_reddit_posts(subreddit_name)
+        posts_data = [
+            {
+                'title': post.title,
+                'score': post.score,
+                'text': post.selftext,
+                'url': post.url,
+                'created_at': datetime.fromtimestamp(post.created_utc, timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z'),
+                'author': post.author.name if post.author else '[deleted]',
+                'author_profile_image': post.author.icon_img if post.author else None
+            }
+            for post in posts
+        ]
+        print(posts)
+        return jsonify(posts_data)
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 @app.route('/login', methods=['POST'])
 async def login():

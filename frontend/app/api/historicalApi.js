@@ -5,7 +5,14 @@ export const fetchHistoricalData = async (type, symbol) => {
   const url = `http://localhost:5000/api/historical/${type}/${encodedSymbol}`;
   console.log("Request URL:", url);
   try {
-    const response = await axios.get(url);
+    // Get the CSRF token from localStorage
+    const csrfToken = localStorage.getItem("csrfToken");
+    const response = await axios.get(url, {
+      headers: {
+        "X-CSRF-Token": csrfToken,
+      },
+      withCredentials: true, // Important for cookies
+    });
     console.log("API fetch response:", response.data);
     return response.data; // Return the fetched data
   } catch (error) {

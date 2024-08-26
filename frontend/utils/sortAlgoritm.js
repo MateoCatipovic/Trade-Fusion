@@ -1,9 +1,9 @@
 export const sortArticles = (articles, sortOrder) => {
     return articles.sort((a, b) => {
-      console.log("sort ", a.seendate);
+      
       // const dateA = new Date(a.seendate);
       const dateA = parseCustomDate(a.seendate);
-      console.log(dateA);
+     
       //const dateB = new Date(b.seendate);
       const dateB = parseCustomDate(b.seendate);
       return sortOrder === "asc" ? dateA - dateB : dateB - dateA;

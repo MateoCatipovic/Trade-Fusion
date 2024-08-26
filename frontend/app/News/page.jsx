@@ -11,7 +11,7 @@ const News = () => {
   const [news, setNews] = useState([]); // Use 'any' or define a type for news articles
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortOrder, setSortOrder] = useState("asc"); // 'asc' for ascending, 'desc' for descending
+  const [sortOrder, setSortOrder] = useState("desc"); // 'asc' for ascending, 'desc' for descending
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 9;
 
@@ -35,7 +35,7 @@ const News = () => {
 
           // Modify the seendate of each article
           const formattedArticles = data.articles.map((article) => {
-            console.log("Original seendate:", article.seendate);
+            //console.log("Original seendate:", article.seendate);
             return {
               ...article,
               seendate: formatTimestamp(article.seendate),
@@ -61,7 +61,7 @@ const News = () => {
   };
 
   const handleSortButtonClick = () => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+    setSortOrder((prevOrder) => (prevOrder === "desc" ? "asc" : "desc"));
   };
 
   const handlePageChange = (pageNumber) => {
@@ -84,7 +84,7 @@ const News = () => {
       <p className="text-3xl font-semibold mb-10">News</p>
       {/* Sort Button */}
       <button onClick={handleSortButtonClick} className="mb-5">
-        Sort by Date ({sortOrder === "asc" ? "Ascending" : "Descending"})
+        Sort by Date ({sortOrder === "asc" ? "Oldest" : "Latest"})
       </button>
       <div className="flex w-[250px] justify-between mb-12">
         <button
@@ -144,10 +144,11 @@ const News = () => {
               )}
 
               <h2 className="font-semibold">{article.title}</h2>
-              <a href={article.url} target="_blank" rel="noopener noreferrer">
+              </Link>
+              {/* <a href={article.url} target="_blank" rel="noopener noreferrer">
                 Read more
-              </a>
-            </Link>
+              </a> */}
+            
 
             <p>{article.seendate}</p>
           </div>
