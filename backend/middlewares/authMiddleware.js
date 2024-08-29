@@ -10,9 +10,7 @@ function authenticateToken(req, res, next) {
     return res.status(401).json({ error: "Token is missing" });
   }
 
-  console.log("csrf: ", csrfToken);
-
- try {
+  try {
     const decoded = jwt.verify(token, JWT_SECRET);
     if (decoded.csrfToken !== csrfToken) {
       return res.status(403).json({ error: "Forbidden - CSRF token invalid" });
@@ -21,7 +19,9 @@ function authenticateToken(req, res, next) {
     next(); // Proceed to the next middleware/route handler
   } catch (err) {
     console.error("Token verification failed:", err);
-    return res.status(403).json({ error: "Forbidden - Token verification failed" });
+    return res
+      .status(403)
+      .json({ error: "Forbidden - Token verification failed" });
   }
 }
 

@@ -102,7 +102,7 @@ export default function Home() {
     <main className="flex flex-col">
       {" "}
       <Navbar isHomePage={true} />
-      <div className="bg-home h-screen bg-top-neg-50px">
+      <div className="bg-home bg-cover h-screen bg-top-neg-50px">
         <p className="w-[550px] text-2xl mt-12">
           <b className="text-3xl">Connect with Like-Minded Traders:</b>
           <br />

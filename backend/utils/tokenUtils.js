@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = "1h"; // Adjust expiration as needed
+const JWT_EXPIRES_IN = "3h"; // Adjust expiration as needed
 
 function generateJwt(userId, csrfToken) {
   return jwt.sign(
@@ -11,7 +11,6 @@ function generateJwt(userId, csrfToken) {
     { expiresIn: JWT_EXPIRES_IN }
   );
 }
-
 
 function generateCsrfToken() {
   return crypto.randomBytes(48).toString("hex");

@@ -39,7 +39,7 @@ app.use(cookieParser());
 app.use("/auth", authRoutes);
 //app.use("/api", authMiddleware, dataRoutes); // All API routes require auth
 app.use("/api", authMiddleware, dataRoutes); // All API routes require auth
-app.use("/social", socialMediaRoutes)
+app.use("/social", authMiddleware, socialMediaRoutes);
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

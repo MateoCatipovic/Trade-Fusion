@@ -26,8 +26,8 @@ async function login(req, res) {
     // Generate JWT and CSRF token
     const { token, csrfToken } = createTokens(user.id);
 
-    console.log("token:", token);
-    console.log("csrf:", csrfToken);
+    // console.log("token:", token);
+    // console.log("csrf:", csrfToken);
 
     // Send JWT in an HttpOnly cookie and CSRF token in header
     res.cookie("token", token, {
@@ -39,7 +39,7 @@ async function login(req, res) {
 
     return res
       .status(200)
-      .json({ message: "Login successful", userName: user.username });
+      .json({ message: "Login successful", userName: user.username, userId: user.id });
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ error: "Internal server error" });

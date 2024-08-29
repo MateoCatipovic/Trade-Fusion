@@ -6,13 +6,14 @@ const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const tweetsPerPage = 20;
-  //const [sessionStatus, setSessionStatus] = useState("");
 
   const fetchTweets = async () => {
     setLoading(true);
     try {
       if (loggedIn) {
-        const response = await fetch("http://localhost:4000/fetch-tweets");
+        const response = await fetch(
+          "http://localhost:5000/social/fetch-twitter-posts"
+        );
         if (!response.ok) {
           setLoggedIn(false);
           setTweets([]);
@@ -124,6 +125,10 @@ const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
         </button>
       </div>
       <div>
+        <div className="flex flex-col  justify-between pl-[44px]  mb-4 h-[80px] w-[400px]">
+          <p>Input subreddit to follow</p>
+          <input className="bg-black border-2 border-sky-500 placeholder:text-white h-[40px] w-auto p-4  rounded-[10px] focus:border-2 focus:border-red-600 outline-none"></input>
+        </div>
         {tweets.length === 0 ? (
           <p>No tweets available.</p>
         ) : (
@@ -144,7 +149,7 @@ const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
                   </div>
                   {/* <span>{tweet.profile_image}</span> */}
                   <p className="text-lg pl-[44px]">{tweet.text}</p>
-               
+
                   <div className="mt-3 pl-[44px]">
                     <span className="mr-2">
                       Retweets: {tweet.retweet_count},

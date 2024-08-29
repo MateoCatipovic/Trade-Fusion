@@ -30,38 +30,77 @@ app = cors(app, allow_origin=["http://localhost:3000","http://localhost:5000" ])
 client = Client('en-US')
 
 # Function to fetch Reddit posts (Synchronous)
-def fetch_reddit_posts_sync(subreddit_name):
-    return list(reddit.subreddit(subreddit_name).top(time_filter='week',limit=20))
+def fetch_reddit_posts_sync(subreddit_name, sort_by, time_filter):
+    if(sort_by == "top"):
+        return list(reddit.subreddit(subreddit_name).top(time_filter=time_filter, limit=20))
+    else:
+      return list(getattr(reddit.subreddit(subreddit_name), sort_by)(limit=20))
 
 # Async function to run the synchronous function in a separate thread
-async def fetch_reddit_posts(subreddit_name):
+async def fetch_reddit_posts(subreddit_name, sort_by, time_filter):
     loop = asyncio.get_event_loop()
     with ThreadPoolExecutor() as pool:
-        posts = await loop.run_in_executor(pool, fetch_reddit_posts_sync, subreddit_name)
+        posts = await loop.run_in_executor(pool, fetch_reddit_posts_sync, subreddit_name, sort_by, time_filter)
     return posts
 
-
-@app.route('/fetch-reddit-posts', methods=['GET'])
+@app.route('/fetch-reddit-posts', methods=['POST'])
 async def fetch_reddit_posts_route():
-    subreddit_name = 'python'  # Can be dynamically set via request args
+    data = await request.get_json()
+    subreddit_names = data.get('subreddits', [])  # Get the 'subreddits' key from the JSON body, default to an empty list
+    sort_by = data.get('sort_by', "new")
+    time_filter = data.get('time_filter', "week")
+    
+    if not subreddit_names or not isinstance(subreddit_names, list):
+        return jsonify({'error': 'No subreddits provided or invalid format. Expected a list of subreddit names.'}), 400
+
+    all_posts_data = []  # List to store all posts data for each subreddit
+
     try:
-        posts = await fetch_reddit_posts(subreddit_name)
-        posts_data = [
-            {
-                'title': post.title,
-                'score': post.score,
-                'text': post.selftext,
-                'url': post.url,
-                'created_at': datetime.fromtimestamp(post.created_utc, timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z'),
-                'author': post.author.name if post.author else '[deleted]',
-                'author_profile_image': post.author.icon_img if post.author else None
-            }
-            for post in posts
-        ]
-        print(posts)
-        return jsonify(posts_data)
+        for subreddit_name in subreddit_names:
+            posts = await fetch_reddit_posts(subreddit_name, sort_by, time_filter)
+            print(posts)
+            posts_data = [
+                {
+                    'subreddit': subreddit_name,
+                    'title': post.title,
+                    'score': post.score,
+                    'text': post.selftext,
+                    'url': post.url,
+                    'created_at': datetime.fromtimestamp(post.created_utc, timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z'),
+                    'author': post.author.name if post.author else '[deleted]',
+                    'author_profile_image': post.author.icon_img if hasattr(post.author, 'icon_img') else None
+                }
+                for post in posts
+            ]
+            all_posts_data.extend(posts_data)  # Append the posts from each subreddit to the list
+
+        print(all_posts_data)  # Print all fetched posts for debugging
+        return jsonify(all_posts_data)  # Return all posts in a single JSON response
     except Exception as e:
         return jsonify({'error': str(e)})
+
+
+# @app.route('/fetch-reddit-posts', methods=['GET'])
+# async def fetch_reddit_posts_route():
+#     subreddit_name = 'python'  # Can be dynamically set via request args
+#     try:
+#         posts = await fetch_reddit_posts(subreddit_name)
+#         posts_data = [
+#             {
+#                 'title': post.title,
+#                 'score': post.score,
+#                 'text': post.selftext,
+#                 'url': post.url,
+#                 'created_at': datetime.fromtimestamp(post.created_utc, timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z'),
+#                 'author': post.author.name if post.author else '[deleted]',
+#                 'author_profile_image': post.author.icon_img if post.author else None
+#             }
+#             for post in posts
+#         ]
+#         print(posts)
+#         return jsonify(posts_data)
+#     except Exception as e:
+#         return jsonify({'error': str(e)})
 
 @app.route('/login', methods=['POST'])
 async def login():

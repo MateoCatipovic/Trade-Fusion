@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Contacts from "./components/Contacts";
+import {AuthProvider} from "./context/AuthContext"
 import "./globals.css";
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css' // Import the CSS
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="scrollbar scrollbar-thumb-gray-500 scrollbar-track-black-900 overflow-y-scroll">
+      <AuthProvider>
         {children}
+        </AuthProvider>
         <footer className="p-0">
           <Contacts />
         </footer>
