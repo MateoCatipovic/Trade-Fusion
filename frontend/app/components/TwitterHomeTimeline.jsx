@@ -1,5 +1,9 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import {
+  fetchTweetsApi,
+  twitterLogoutApi,
+} from "../api/twitterHomeTimelineApi";
 
 const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
   const [tweets, setTweets] = useState([]);
@@ -11,15 +15,12 @@ const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
     setLoading(true);
     try {
       if (loggedIn) {
-        const response = await fetch(
-          "http://localhost:5000/social/fetch-twitter-posts"
-        );
-        if (!response.ok) {
+        const data = await fetchTweetsApi();
+        if (!data) {
           setLoggedIn(false);
           setTweets([]);
           throw new Error("Failed to fetch tweets");
         }
-        const data = await response.json();
         setTweets(Array.isArray(data) ? data : []); // Ensure tweets is always an array
       } else {
         alert("Session expired. Please log in again.");
@@ -36,35 +37,28 @@ const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
     }
   };
 
-  const checkSession = async () => {
-    try {
-      const response = await fetch("http://localhost:4000/check-session");
-      if (!response.ok) throw new Error("Failed to check session");
-      const sessionData = await response.json();
-      setLoggedIn(sessionData.session_valid);
-      if (!sessionData.session_valid) {
-        alert("Session expired. Please log in again.");
-        setTweets([]);
-        if (typeof window !== "undefined") {
-          localStorage.setItem("loggedIn", JSON.stringify(false));
-        }
-        setLoggedIn(false);
-      }
-    } catch (error) {
-      console.error("Error checking session:", error);
-    }
-  };
+  // const checkSession = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:4000/check-session");
+  //     if (!response.ok) throw new Error("Failed to check session");
+  //     const sessionData = await response.json();
+  //     setLoggedIn(sessionData.session_valid);
+  //     if (!sessionData.session_valid) {
+  //       alert("Session expired. Please log in again.");
+  //       setTweets([]);
+  //       if (typeof window !== "undefined") {
+  //         localStorage.setItem("loggedIn", JSON.stringify(false));
+  //       }
+  //       setLoggedIn(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error checking session:", error);
+  //   }
+  // };
 
   const logOut = async () => {
     try {
-      const response = await fetch("http://localhost:4000/logout", {
-        method: "POST", // Make sure to use the POST method
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-
+      const data = await twitterLogoutApi();
       if (data.success) {
         alert("Logout successful!");
         setTweets([]);
@@ -125,10 +119,6 @@ const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
         </button>
       </div>
       <div>
-        <div className="flex flex-col  justify-between pl-[44px]  mb-4 h-[80px] w-[400px]">
-          <p>Input subreddit to follow</p>
-          <input className="bg-black border-2 border-sky-500 placeholder:text-white h-[40px] w-auto p-4  rounded-[10px] focus:border-2 focus:border-red-600 outline-none"></input>
-        </div>
         {tweets.length === 0 ? (
           <p>No tweets available.</p>
         ) : (

@@ -10,7 +10,7 @@ async function findUserByEmailOrUsername(emailOrUsername) {
     .single();
 
   if (error || !user) {
-    return res.status(400).json({ error: "Invalid credentials" });
+    return error;
   }
   return user;
 }

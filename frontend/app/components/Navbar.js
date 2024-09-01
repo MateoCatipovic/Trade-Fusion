@@ -3,9 +3,12 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import {logOut} from "../../utils/logOut"
 
 const Navbar = ({ isHomePage }) => {
   const [username, setUsername] = useState("");
+  //const { logOut } = useAuth();
 
   useEffect(() => {
     const name = localStorage.getItem("username", username);
@@ -16,18 +19,9 @@ const Navbar = ({ isHomePage }) => {
 
   const handleLogout = async () => {
     try {
-      // Send a request to the backend to log out
-      const response = await axios.post(
-        "http://localhost:5000/auth/logout",
-        {},
-        { withCredentials: true }
-      );
-      if (response.status === 200) {
-        setUsername("");
-        localStorage.removeItem("username");
-        localStorage.removeItem("csrfToken");
-        window.location.href = "/SignIn";
-      }
+      setUsername("");
+      await logOut();
+      
     } catch (error) {
       console.error("Logout error:", error);
     }

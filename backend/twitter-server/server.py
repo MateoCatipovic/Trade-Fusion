@@ -9,6 +9,8 @@ from concurrent.futures import ThreadPoolExecutor
 #import asyncpraw
 import praw
 from datetime import datetime, timezone
+import json
+import tempfile
 
 # Specify the path to the .env file
 env_path = Path('../.env')
@@ -58,7 +60,7 @@ async def fetch_reddit_posts_route():
     try:
         for subreddit_name in subreddit_names:
             posts = await fetch_reddit_posts(subreddit_name, sort_by, time_filter)
-            print(posts)
+            # print(posts)
             posts_data = [
                 {
                     'subreddit': subreddit_name,
@@ -78,31 +80,23 @@ async def fetch_reddit_posts_route():
         return jsonify(all_posts_data)  # Return all posts in a single JSON response
     except Exception as e:
         return jsonify({'error': str(e)})
+    
+    # Function to load cookies from a file
+async def load_cookies_from_file(file_path):
+    global cookie_storage
+    try:
+        with open(file_path, 'r') as file:
+            cookies = json.load(file)  # Load JSON data from file
+            print(cookies)
+            print("Cookies loaded successfully from file.")
+            return cookies
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from file: {file_path}")
 
 
-# @app.route('/fetch-reddit-posts', methods=['GET'])
-# async def fetch_reddit_posts_route():
-#     subreddit_name = 'python'  # Can be dynamically set via request args
-#     try:
-#         posts = await fetch_reddit_posts(subreddit_name)
-#         posts_data = [
-#             {
-#                 'title': post.title,
-#                 'score': post.score,
-#                 'text': post.selftext,
-#                 'url': post.url,
-#                 'created_at': datetime.fromtimestamp(post.created_utc, timezone.utc).strftime('%Y-%m-%d %H:%M:%S %Z'),
-#                 'author': post.author.name if post.author else '[deleted]',
-#                 'author_profile_image': post.author.icon_img if post.author else None
-#             }
-#             for post in posts
-#         ]
-#         print(posts)
-#         return jsonify(posts_data)
-#     except Exception as e:
-#         return jsonify({'error': str(e)})
-
-@app.route('/login', methods=['POST'])
+@app.route('/login-twitter', methods=['POST'])
 async def login():
     data = await request.get_json()
     username = data.get('username')
@@ -116,14 +110,25 @@ async def login():
             password=password
         )
         client.save_cookies('cookies.json')
-        return jsonify({'success': True})
+        cookie = await load_cookies_from_file('cookies.json')
+        print(cookie)
+        return jsonify({'success': True, 'cookie': cookie})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-@app.route('/fetch-tweets', methods=['GET'])
+@app.route('/fetch-tweets', methods=['POST'])
 async def fetch_tweets():
     try:
-        client.load_cookies('cookies.json')
+        data = await request.get_json()
+        cookie = data.get('cookie')
+        print(cookie)
+
+         # Create a temporary file to store the cookie JSON
+        with tempfile.NamedTemporaryFile(delete=False) as temp_cookie_file:
+            temp_cookie_file.write(json.dumps(cookie).encode('utf-8'))  # Write cookie JSON to the file
+            temp_cookie_file_path = temp_cookie_file.name  # Get the path of the temp file
+
+        client.load_cookies(temp_cookie_file_path)
         tweets = await client.get_latest_timeline()
         tweets_data = [
             {
@@ -140,16 +145,16 @@ async def fetch_tweets():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-@app.route('/check-session', methods=['GET'])
-async def check_session():
-    try:
-        client.load_cookies('cookies.json')
-        await client.get_latest_timeline(count=1)
-        return jsonify({'session_valid': True})
-    except Exception as e:
-        return jsonify({'session_valid': False, 'error': str(e)})
+# @app.route('/check-session', methods=['GET'])
+# async def check_session():  
+#     try:
+#         client.load_cookies('cookies.json')
+#         await client.get_latest_timeline(count=1)
+#         return jsonify({'session_valid': True})
+#     except Exception as e:
+#         return jsonify({'session_valid': False, 'error': str(e)})
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout-twitter', methods=['POST'])
 async def logout():
     try:
         await client.logout()

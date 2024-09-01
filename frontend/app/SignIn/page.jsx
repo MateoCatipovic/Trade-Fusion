@@ -2,15 +2,16 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { logIn } from "../api/logInApi";
+import { useAuth } from "../context/AuthContext";
 
 const SignIn = () => {
   const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { isLoggedIn, setIsLoggedIn } = useAuth();
 
   useEffect(() => {
     // Get the target element
     const targetDiv = document.getElementById("email-div");
-
     // Scroll to the target div if it exists
     if (targetDiv) {
       targetDiv.scrollIntoView({ behavior: "smooth" });
@@ -19,13 +20,11 @@ const SignIn = () => {
 
   const handleLogin = async () => {
     try {
-      const { message } = await logIn(
-        emailOrUsername,
-        password
-      ); 
+      const { message } = await logIn(emailOrUsername, password);
 
       // Handle successful login
       console.log("Login successful:", message);
+      localStorage.setItem("isLoggedIn", "true");
       window.location.href = "/";
     } catch (error) {
       console.error("Login error:", error);
@@ -34,7 +33,7 @@ const SignIn = () => {
 
   return (
     <div className="">
-      <Navbar isHomePage={false}/>
+      <Navbar isHomePage={false} />
       <div className="relative bg-sign-in h-[700px] w-full bg-cover bg-center ">
         {/* Gradients */}
         <div

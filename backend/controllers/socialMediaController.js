@@ -1,5 +1,6 @@
 const { default: axios } = require("axios");
 const { fetchSubredditsFromDB } = require("../services/fetchAndSendSubreddits");
+const { getTwitterSessionService } = require("../services/twitterService");
 
 const fetchRedditPosts = async (req, res) => {
   const userId = req.user.userId;
@@ -8,12 +9,12 @@ const fetchRedditPosts = async (req, res) => {
   }
 
   const sort_by = req.query.sort_by;
-  if(!sort_by){
+  if (!sort_by) {
     return res.status(401).json({ error: "Sort_by filter is missing" });
   }
 
   const time_filter = req.query.time_filter;
-  if(!time_filter){
+  if (!time_filter) {
     return res.status(401).json({ error: "time_filter is missing" });
   }
 
@@ -29,7 +30,7 @@ const fetchRedditPosts = async (req, res) => {
       {
         subreddits: subreddits, // Sending subreddit names in request body
         sort_by: sort_by,
-        time_filter: time_filter
+        time_filter: time_filter,
       },
       {
         headers: {
@@ -41,8 +42,8 @@ const fetchRedditPosts = async (req, res) => {
     console.log("Response from Python server:", response.data);
     if (response.data) {
       return res.status(200).json({
-        subreddits: subreddits, 
-        redditPosts: response.data, 
+        subreddits: subreddits,
+        redditPosts: response.data,
       });
     }
   } catch (error) {
@@ -52,8 +53,24 @@ const fetchRedditPosts = async (req, res) => {
 };
 
 const fetchTwiterPosts = async (req, res) => {
+  const userId = req.user.userId;
+  if (!userId) {
+    return res.status(401).json({ error: "User ID is missing" });
+  }
+
   try {
-    const response = await axios.get("http://localhost:4000/fetch-tweets");
+    const cookie = await getTwitterSessionService(userId);
+    const response = await axios.post(
+      "http://localhost:4000/fetch-tweets",
+      {
+        cookie: cookie,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     console.log(response.data);
     if (response.data) {
       return res.status(200).json(response.data);

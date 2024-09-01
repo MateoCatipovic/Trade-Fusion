@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import {twitterLoginApi} from "../api/twitterLogInApi";
 
 const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
   const [username, setUsername] = useState("");
@@ -9,23 +10,9 @@ const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(username)
-    console.log(email)
-    console.log(password)
     try {
-      const response = await fetch("http://localhost:4000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
-      });
-
-      const data = await response.json();
+      const data = await twitterLoginApi(username, email, password);
+     
       if (data.success) {
         alert("Login successful!");
         if (typeof window !== "undefined") {
@@ -36,9 +23,9 @@ const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
       } else {
         setError("Login failed. Please check your credentials.");
         if (typeof window !== "undefined") {
-            console.log("Storing loggedIn as false in localStorage");
-            localStorage.setItem("loggedIn", JSON.stringify(false));
-          }
+          console.log("Storing loggedIn as false in localStorage");
+          localStorage.setItem("loggedIn", JSON.stringify(false));
+        }
         setLoggedIn(false);
       }
     } catch (err) {
