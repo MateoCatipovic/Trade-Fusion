@@ -19,7 +19,6 @@ const SignUp = () => {
   useEffect(() => {
     // Get the target element
     const targetDiv = document.getElementById("profile-div");
-
     // Scroll to the target div if it exists
     if (targetDiv) {
       targetDiv.scrollIntoView({ behavior: "smooth" });
@@ -50,7 +49,6 @@ const SignUp = () => {
   // const handleEmailChange = (e) => {
   //   setEmail(e.target.value);
   // };
-
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!email || !userName || !password || !confirmPassword) {
@@ -67,9 +65,6 @@ const SignUp = () => {
       console.log("Passwords are valid, proceed with form submission.");
       // Proceed with registration logic
     }
-
-    console.log(email)
-
     try {
       const response = await axios.post("http://localhost:5000/api/register", {
         email: email,
@@ -123,7 +118,7 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={emailError}
-              placeholder="Email"
+              placeholder="email"
             />
 
             <InputField
@@ -131,7 +126,7 @@ const SignUp = () => {
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
               error={userNameError}
-              placeholder="User name"
+              placeholder="username"
             />
 
             <InputField
@@ -140,7 +135,7 @@ const SignUp = () => {
               value={password}
               onChange={handlePasswordChange}
               error={passwordError}
-              placeholder="Password"
+              placeholder="password"
             />
 
             <InputField
@@ -149,43 +144,9 @@ const SignUp = () => {
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
               error={confirmPasswordError}
-              placeholder="Confirm password"
+              placeholder="confirm password"
             />
-            {/* <input
-              onChange={handleEmailChange}
-              className="bg-black/50 placeholder:text-white h-[40px] w-auto p-4 rounded-[10px] focus:border-2  focus:border-red-600 outline-none"
-              placeholder="Email"
-              type="email"
-            ></input>
-            <input
-              onChange={(e) => {
-                setUserName(e.target.value);
-              }}
-              className="bg-black/50 placeholder:text-white h-[40px] w-auto p-4 rounded-[10px] focus:border-2  focus:border-red-600 outline-none"
-              placeholder="User name"
-            ></input>
-            <input
-              onChange={handlePasswordChange}
-              className="bg-black/50 placeholder:text-white h-[40px] w-auto p-4 rounded-[10px] focus:border-2  focus:border-red-600 outline-none"
-              placeholder="Password"
-              type="password"
-            ></input>
-            {passwordError && (
-              <p className="text-red-400 bg-black mt-2 rounded-[10px] p-2">
-                {passwordError}
-              </p>
-            )}
-            <input
-              onChange={handleConfirmPasswordChange}
-              className="bg-black/50 placeholder:text-white h-[40px] w-auto p-4 rounded-[10px] focus:border-2  focus:border-red-600 outline-none"
-              placeholder="Confirm password"
-              type="password"
-            ></input>
-            {confirmPasswordError && (
-              <p className="text-red-400 bg-black mt-2 rounded-[10px] p-2 ">
-                {confirmPasswordError}
-              </p>
-            )} */}
+    
             <button
               type="submit"
               className="bg-red-500 hover:bg-red-800 drop-shadow-2xl text-white px-6 py-2 rounded-md"

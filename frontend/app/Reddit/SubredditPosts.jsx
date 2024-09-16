@@ -31,7 +31,6 @@ const SubredditPosts = () => {
 
   const handleSaveSubreddits = async (e) => {
     e.preventDefault();
-
     try {
       const csrfToken = localStorage.getItem("csrfToken");
       await axios.post(
@@ -89,7 +88,6 @@ const SubredditPosts = () => {
       ) : (
         <div>
           <div className="flex justify-between">
-
             <div className="flex flex-col  justify-between pl-[44px]  mb-[100px] h-[80px] w-[400px]">
               <p className="mb-2">Input subreddit to follow:</p>
 
@@ -123,7 +121,6 @@ const SubredditPosts = () => {
               </ul>
             </div>
 
-
             <div className="flex ">
               <SortByDropdown sortBy={sortBy} setSortBy={setSortBy} />
               {sortBy === "top" && (
@@ -133,7 +130,6 @@ const SubredditPosts = () => {
                 />
               )}
             </div>
-
           </div>
           <div>
             {redditPosts.length === 0 ? (

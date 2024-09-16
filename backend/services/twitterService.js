@@ -62,7 +62,7 @@ async function getTwitterSessionService(user_id) {
       console.log("cookieError", selectError);
       throw selectError;
     }
-
+    console.log("ccokie iz baze:", cookie.cookie_data);
     if (cookie.cookie_data) {
       return cookie.cookie_data;
     }

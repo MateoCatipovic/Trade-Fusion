@@ -60,6 +60,7 @@ const fetchTwiterPosts = async (req, res) => {
 
   try {
     const cookie = await getTwitterSessionService(userId);
+    console.log("cookie u controleru:", cookie);
     const response = await axios.post(
       "http://localhost:4000/fetch-tweets",
       {

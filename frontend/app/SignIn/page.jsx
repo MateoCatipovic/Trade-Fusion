@@ -24,7 +24,7 @@ const SignIn = () => {
 
       // Handle successful login
       console.log("Login successful:", message);
-      localStorage.setItem("isLoggedIn", "true");
+      
       window.location.href = "/";
     } catch (error) {
       console.error("Login error:", error);

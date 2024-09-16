@@ -11,8 +11,11 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     // Initialize state based on localStorage
-    const storedStatus = localStorage.getItem("isLoggedIn");
-    return storedStatus === "true"; // Convert stored string to boolean
+    if (typeof window !== "undefined") {
+      const storedStatus = localStorage.getItem("isLoggedIn");
+      console.log("pocetna: ", storedStatus);
+      return storedStatus === "true";
+    }
   });
   const [loading, setLoading] = useState(true);
 
@@ -37,14 +40,13 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("isLoggedIn", "false");
       await logOut();
     }
-
+    
     setLoading(false);
   };
 
   useEffect(() => {
-    if (isLoggedIn) {
+     if (isLoggedIn) {
       checkLoginStatus(); // Check immediately when the user logs in
-
       // Start interval to check login status every 6 seconds
       const interval = setInterval(() => {
         checkLoginStatus();
@@ -54,10 +56,16 @@ export const AuthProvider = ({ children }) => {
     } // Cleanup the interval on unmount
   }, []);
 
+
   // Additional useEffect to log whenever isLoggedIn changes
   useEffect(() => {
     console.log("isLoggedIn:", isLoggedIn);
-  }, [isLoggedIn]);
+
+    // if (!isLoggedIn) {
+    //   //checkLoginStatus();
+    //   //doLogOut();
+    // }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, loading }}>

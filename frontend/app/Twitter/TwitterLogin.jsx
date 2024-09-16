@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import {twitterLoginApi} from "../api/twitterLogInApi";
+import { twitterLoginApi } from "../api/twitterLogInApi";
 
 const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
   const [username, setUsername] = useState("");
@@ -12,7 +12,7 @@ const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
     e.preventDefault();
     try {
       const data = await twitterLoginApi(username, email, password);
-     
+
       if (data.success) {
         alert("Login successful!");
         if (typeof window !== "undefined") {
@@ -35,12 +35,12 @@ const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
 
   return (
     <div className="">
-      <h1 className="text-3xl ">Login to your X account</h1>
+      <h1 className="text-3xl mb-4">Login to your X account</h1>
       <form className="w-[400px]" onSubmit={handleLogin}>
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-2">
           <label htmlFor="username">Username:</label>
           <input
-            className="text-black"
+            className="text-white bg-black p-2 rounded-[10px] border-2 border-white mt-2 "
             type="text"
             id="username"
             placeholder="username"
@@ -49,10 +49,10 @@ const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
             required
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-2">
           <label htmlFor="email">Email:</label>
           <input
-            className="text-black"
+            className="text-white bg-black p-2 rounded-[10px] border-2 border-white mt-2 "
             type="email"
             id="email"
             placeholder="email"
@@ -61,10 +61,10 @@ const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
             required
           />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col mt-2">
           <label htmlFor="password">Password:</label>
           <input
-            className="text-black"
+            className="text-white bg-black p-2 rounded-[10px] border-2 border-white mt-2 "
             type="password"
             id="password"
             placeholder="password"
@@ -73,7 +73,10 @@ const TwitterLogin = ({ loggedIn, setLoggedIn }) => {
             required
           />
         </div>
-        <button className="mt-4 text-white" type="submit">
+        <button
+          className="mt-6 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          type="submit"
+        >
           Login
         </button>
       </form>

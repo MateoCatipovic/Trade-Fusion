@@ -2,15 +2,13 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import axios from "axios";
-import { useAuth } from "../context/AuthContext";
-import {logOut} from "../../utils/logOut"
+import { logOut } from "../../utils/logOut";
 
 const Navbar = ({ isHomePage }) => {
   const [username, setUsername] = useState("");
-  //const { logOut } = useAuth();
 
   useEffect(() => {
+    //console.log(userLoginStatus);
     const name = localStorage.getItem("username", username);
     if (name) {
       setUsername(name);
@@ -21,7 +19,6 @@ const Navbar = ({ isHomePage }) => {
     try {
       setUsername("");
       await logOut();
-      
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -41,7 +38,7 @@ const Navbar = ({ isHomePage }) => {
             alt="Picture of the author"
           />
         </Link>
-        <div className="flex w-[500px] justify-between">
+        <div className="flex w-[400px] justify-between">
           <Link href="/News" scroll={false}>
             News
           </Link>
@@ -53,12 +50,6 @@ const Navbar = ({ isHomePage }) => {
           </Link>
           <Link href="/Markets" scroll={false}>
             Markets
-          </Link>
-          <Link href="/Forum" scroll={false}>
-            Forum
-          </Link>
-          <Link href="/Brokers" scroll={false}>
-            Brokers
           </Link>
         </div>
         <div>

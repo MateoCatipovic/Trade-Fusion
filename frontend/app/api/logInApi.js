@@ -9,23 +9,18 @@ export const logIn = async (emailOrUsername, password) => {
         password,
       },
       {
-        withCredentials: true, // Ensure credentials are sent with requests
+        withCredentials: true,
       }
     );
-    // Successful login
+    // Handle successful login
     if (response.status === 200) {
-      // Handle successful login
-      console.log("Login successful:", response.data.message);
-      console.log("Logged in as:", response.data.userName);
-      console.log("response header", response.headers)
       // Correct header key to access the CSRF token
       const csrfToken = response.headers["x-csrf-token"];
       const username = response.data.userName;
-      console.log("CSRF TOKEN:", csrfToken);
 
       localStorage.setItem("csrfToken", csrfToken);
       localStorage.setItem("username", username);
-
+      localStorage.setItem("isLoggedIn", "true");
       // If using cookies, the token is already set by the backend
       return {
         message: response.data.message,

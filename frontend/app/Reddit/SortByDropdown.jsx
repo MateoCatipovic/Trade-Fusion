@@ -14,7 +14,6 @@ const SortByDropdown = ({ sortBy, setSortBy }) => {
         <option value="top">Top</option>
         <option value="new">New</option>
         <option value="hot">Hot</option>
-        {/* <option value="controversial">Controversial</option> */}
         <option value="rising">Rising</option>
       </select>
     </div>

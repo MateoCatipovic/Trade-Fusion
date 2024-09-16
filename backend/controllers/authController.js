@@ -36,7 +36,7 @@ async function login(req, res) {
       httpOnly: true,
       secure: true,
       sameSite: "Strict",
-      maxAge: 60000,
+      maxAge: 86400000,
     });
     res.set("X-CSRF-Token", csrfToken);
 
@@ -181,7 +181,7 @@ async function logoutTwitter(req, res) {
     //   message: "Login successful",
     // });
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Logout error:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }

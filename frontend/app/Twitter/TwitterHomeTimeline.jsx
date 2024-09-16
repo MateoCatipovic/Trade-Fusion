@@ -37,28 +37,29 @@ const TwitterHomeTimeline = ({ loggedIn, setLoggedIn }) => {
     }
   };
 
-  // const checkSession = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:4000/check-session");
-  //     if (!response.ok) throw new Error("Failed to check session");
-  //     const sessionData = await response.json();
-  //     setLoggedIn(sessionData.session_valid);
-  //     if (!sessionData.session_valid) {
-  //       alert("Session expired. Please log in again.");
-  //       setTweets([]);
-  //       if (typeof window !== "undefined") {
-  //         localStorage.setItem("loggedIn", JSON.stringify(false));
-  //       }
-  //       setLoggedIn(false);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error checking session:", error);
-  //   }
-  // };
+  const checkSession = async () => {
+    try {
+      const response = await fetch("http://localhost:4000/check-session");
+      if (!response.ok) throw new Error("Failed to check session");
+      const sessionData = await response.json();
+      setLoggedIn(sessionData.session_valid);
+      if (!sessionData.session_valid) {
+        alert("Session expired. Please log in again.");
+        setTweets([]);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("loggedIn", JSON.stringify(false));
+        }
+        setLoggedIn(false);
+      }
+    } catch (error) {
+      console.error("Error checking session:", error);
+    }
+  };
 
   const logOut = async () => {
     try {
       const data = await twitterLogoutApi();
+      console.log(data);
       if (data.success) {
         alert("Logout successful!");
         setTweets([]);

@@ -1,11 +1,11 @@
 import React from "react";
 import useWebSocket from "../../utils/useWebSocket";
 import dynamic from "next/dynamic";
-const ChartComponent = dynamic(() => import("../components/ChartComponent"), {
+const ChartComponent = dynamic(() => import("./ChartComponent"), {
   ssr: false, // Disable server-side rendering
 });
 
-const StocksClient = () => {
+const HomePageCharts = () => {
   // const [googleData, setGoogleData] = useState([]);
   // const [btcUsdData, setBtcUsdData] = useState([]);
   // const [avaxUsdData, setAvaxUsdData] = useState([]);
@@ -140,21 +140,30 @@ const StocksClient = () => {
   //   },
   // };
   const { googleData, btcUsdData, avaxUsdData, appleData } = useWebSocket(
-    "ws://localhost:5000"
+    "ws://localhost:5000/"
   );
 
   return (
-    <div className="w-[800px] h-[700px]">
+    <div className="w-auto h-[700px]">
       <h1>Real-Time Stock Prices</h1>
-      <div className="flex " >
-        <ChartComponent data={googleData} title="GOOGL Price" />
-
-        <ChartComponent data={btcUsdData} title="BTC/USD Price" />
-        <ChartComponent data={avaxUsdData} title="AVAX/USD Price" />
-        <ChartComponent data={appleData} title="AAPL Price" />
+      <div className="flex w-full h-ful">
+        <div className="flex-1 mr-2 ">
+          <ChartComponent data={googleData} title="GOOGL Price" />
+        </div>
+        <div className="flex flex-col justify-between gap-2 ">
+          <div>
+            <ChartComponent data={btcUsdData} title="BTC/USD Price" />
+          </div>
+          <div>
+            <ChartComponent data={avaxUsdData} title="AVAX/USD Price" />
+          </div>
+          <div>
+            <ChartComponent data={appleData} title="AAPL Price" />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default StocksClient;
+export default HomePageCharts;

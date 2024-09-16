@@ -6,7 +6,6 @@ from quart_cors import cors
 from twikit import Client
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-#import asyncpraw
 import praw
 from datetime import datetime, timezone
 import json
@@ -25,7 +24,7 @@ reddit = praw.Reddit(
 )
 
 app = Quart(__name__)
-app = cors(app, allow_origin=["http://localhost:3000","http://localhost:5000" ])  # Allow requests from your frontend's origin
+app = cors(app, allow_origin=["http://localhost:5000"])  # Allow requests from your frontend's origin
 
 
 # Initialize client
@@ -157,7 +156,9 @@ async def fetch_tweets():
 @app.route('/logout-twitter', methods=['POST'])
 async def logout():
     try:
-        await client.logout()
+        response = await client.logout()
+        print('logout response')
+        print(response)
         return jsonify({'success': True}), 200  # Return success with 200 status
     except Exception as e:
         # Log the error for debugging purposes

@@ -14,8 +14,10 @@ const ChartComponent = ({ data, title }) => {
           label: title,
           data: data.map((point) => point.price),
           fill: true,
-          backgroundColor: "rgba(75,192,192,0.4)",
-          borderColor: "rgba(75,192,192,1)",
+          //backgroundColor: "rgba(255,255,255,0.7)",
+          //borderColor: "rgba(255,255,255,1)",
+          // backgroundColor: "rgba(53,239,79,0.5)",
+           borderColor: "rgba(53,239,79,1)",
           pointRadius: function (context) {
             const index = context.dataIndex;
             const count = context.dataset.data.length;
@@ -38,10 +40,15 @@ const ChartComponent = ({ data, title }) => {
         adapters: {
           date: "date-fns",
         },
+        ticks: {
+          color: "white", // Set the x-axis label text color to white
+        },
       },
       y: {
         beginAtZero: false,
+
         ticks: {
+          color: "white",
           callback: function (value) {
             return value.toFixed(2);
           },
@@ -49,6 +56,20 @@ const ChartComponent = ({ data, title }) => {
       },
     },
     plugins: {
+      legend: {
+        labels: {
+          color: "white", // Set the legend text color to white
+        },
+      },
+      tooltip: {
+        titleColor: "white", // Set tooltip title text color to white
+        bodyColor: "white", // Set tooltip body text color to white
+      },
+      title: {
+        display: true,
+        text: title,
+        color: "white", // Set chart title text color to white
+      },
       zoom: {
         zoom: {
           wheel: {
@@ -74,13 +95,22 @@ const ChartComponent = ({ data, title }) => {
       const ctx = chart.canvas.getContext("2d");
       ctx.save();
       ctx.globalCompositeOperation = "destination-over";
-      ctx.fillStyle = "white"; // Set your desired background color
+      ctx.fillStyle = "black"; // Set your desired background color
       ctx.fillRect(0, 0, chart.width, chart.height);
       ctx.restore();
     },
   };
 
-  return <Line data={chartData} options={options} plugins={[zoomPlugin, backgroundPlugin]} />;
+  return (
+    <div className="h-full">
+      {" "}
+      <Line
+        data={chartData}
+        options={options}
+        plugins={[zoomPlugin, backgroundPlugin]}
+      />
+    </div>
+  );
 };
 
 export default ChartComponent;

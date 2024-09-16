@@ -41,7 +41,6 @@ const News = () => {
               seendate: formatTimestamp(article.seendate),
             };
           });
-
           setNews(formattedArticles);
         } else {
           setError("Invalid data structure");
@@ -145,11 +144,6 @@ const News = () => {
 
               <h2 className="font-semibold">{article.title}</h2>
               </Link>
-              {/* <a href={article.url} target="_blank" rel="noopener noreferrer">
-                Read more
-              </a> */}
-            
-
             <p>{article.seendate}</p>
           </div>
         ))}

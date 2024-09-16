@@ -8,7 +8,6 @@ export const fetchNews = async (category) => {
     // Get the CSRF token from localStorage
     const csrfToken = localStorage.getItem("csrfToken");
 
-
     // Make the API request with the CSRF token in the headers
     const response = await axios.get(url, {
       headers: {
